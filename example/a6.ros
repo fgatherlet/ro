@@ -1,0 +1,68 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  (ql:quickload '(:ro) :silent t)
+  )
+
+;;(defpackage :ros.script.a.3759893904
+;;  (:use :cl :ro))
+;;(in-package :ros.script.a.3759893904)
+(in-package :ro)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (ro-test (ro-{} 3 3 (ro-string "abc")) "abcabcabc")
+  (ro-test (ro-{} 1 nil (ro-string "abc")) "abcabcabc")
+  (ro-test (ro-{} 1 2 (ro-string "abc")) "abcabcabc")
+  
+  (ro-test (ro-{}? 1 2 (ro-string "abc")) "abcabcabc")
+  
+  (ro-test (ro-+ (ro-string "abc")) "abcabcabc")
+  
+  (format t "scan result:~s~%"
+          (ro-scan
+           (ro-group (ro-string "abc")
+                       (ro-group (ro-* (ro-any))))
+           "xxxabcdexabcxxxxxxabcmm"))
+  
+  (format t "scan-all result:~s~%"
+          (ro-scan-all
+           (ro-group (ro-string "abc")
+                       ;;(ro-lambda (when (find (char *target* sp) "dm")
+                       ;;             (funcall cont (1+ sp))))
+                       (ro-group (ro-* (ro-any))))
+           "xxxabcdexabcxxxxxxabcmm"))
+  
+
+  (multiple-value-bind (register scan-start)
+      (ro-scan-all
+       (ro-group (ro-string "abc")
+                 (ro-lambda (when (find (char *target* sp) "dm")
+                              (funcall cont (1+ sp))))
+                 (ro-group (ro-* (ro-any))))
+       "xxxabcdexabcxxxxxxabcmm")
+    (format t "scan-all register:~a~%" register)
+    (format t "scan-all scan-start:~a~%" scan-start))
+
+  (multiple-value-bind (register scan-start)
+      (ro-scan-all
+       (ro-group (ro-string "abc")
+                 (ro-group (ro-* (ro-any)))
+                 )
+       "xxxabcdexabcxxxxxxabcmm")
+    (format t "scan-all register:~a~%" register)
+    (format t "scan-all scan-start:~a~%" scan-start))
+
+  (multiple-value-bind (register scan-start)
+      (ro-scan-all
+       (ro-group (ro-string "abc")
+                 (ro-group (ro-*? (ro-any)))
+                 )
+       "abcabcabc")
+    (format t "scan-all register:~a~%" register)
+    (format t "scan-all scan-start:~a~%" scan-start))
+  )

@@ -1,0 +1,54 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  (ql:quickload '(:ro) :silent t)
+  )
+
+;;(defpackage :ros.script.a.3759893904
+;;  (:use :cl :ro))
+;;(in-package :ros.script.a.3759893904)
+(in-package :ro)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (ro-test (ro-times 3 (ro-string "abc")) "abcabcabc")
+  (ro-test (ro-to-times 3 (ro-string "abc")) "abcabcabc")
+  (ro-test (ro-to-times-lazy 3 (ro-string "abc")) "abcabcabc")
+  (ro-test (ro-seq
+            (ro-string "xx")
+            (ro-to-times-lazy 3 (ro-string "abc"))
+            (ro-string "zz"))
+           "xxabcabczz")
+  (ro-test (ro-{} 1 3 (ro-string "abc")) "abcabczz")
+  (ro-test (ro-seq
+            (ro-times 1 #1=(ro-string "abc"))
+            (ro-to-times 1 #1#)
+            )
+           "abcabczz")
+
+  (format t ">>>---~%")
+  (let* ((pred (ro-string "abc"))
+         (pred2 (dup-plambda pred))
+         (pred3 (ro-string "abc")))
+    (ro-test (ro-seq
+              (ro-times 1 pred)
+              (ro-times 1 pred3)
+              ;;(ro-times 1 pred2)
+              ;;(ro-to-times 1 (dup-plambda pred))
+              )
+             "abcabczz"))
+
+
+;;  (ro-test (let ((max 2)
+;;                 (min 1)
+;;                 (ro-pred (ro-string "abc")))
+;;             (ro-seq (ro-times min (ro-string "abc")) 
+;;                     ;;(ro-times min (ro-string "abc"))
+;;                     (ro-to-times (- max min) (ro-string "abc"))
+;;                     ))
+;;           "abcabczz")
+  )

@@ -1,0 +1,38 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  (ql:quickload '(:ro) :silent t)
+  )
+(in-package :ro)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+
+  (format t "----~%")
+  (do-ro-matches (captured
+                   scan-start
+                 (ro-group
+                  (ro-is
+                   (compose-or
+                    #'space-p
+                    (make-char-between-p #\a #\z)))
+                  )
+                 "  aa KKK  zZ")
+    (format t "~s~%" captured)
+    )
+
+  (format t "----~%")
+  (do-ro-matches (captured
+                  scan-start
+                  (ro-group
+                   (ro-is
+                    (compose-not (make-char-in-p "abc"))))
+                  "abcdefabcdef"
+                  )
+    (format t "~s~%" captured)
+    ))
+  

@@ -1,0 +1,30 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  (ql:quickload '(:ro) :silent t)
+  )
+(in-package :ro)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+
+  ;;(format t "char-class:~s~%" (make-char-class "abcd-kk%s"))
+
+  (format t "~s~%" (ro-scan (ro-/ (ro-[] "abcde%d")) "1kkkkabvcde"))
+  (format t "~s~%" (ro-scan (ro-/ (ro-[]! "abcde")) "kkkkabvcde"))
+  (format t "~s~%" (ro-scan (ro-/ (ro-[] "abcde%d")) "1kkkkabvcde"))
+  (format t "~s~%" (ro-scan (ro-/ (ro-[] "abcde")) "1kkkkabvcde"))
+
+  (format t "~s~%" (ro-scan (ro-/ "1k" (ro-+ "k") (ro-[] "abcde")) "1kkkkabvcde"))
+  )
+
+;;(let* ((*target* "abcd-kk%s")
+;;       (*target-end* (length *target*)))
+;;  (multiple-value-bind (sp result) (funcall (lex-main) 0 nil)
+;;    (when result
+;;      result)))
+

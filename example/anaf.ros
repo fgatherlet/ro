@@ -1,0 +1,30 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  (ql:quickload '(:ro) :silent t)
+  )
+;;(in-package :ro)
+(defpackage :x (:use :cl :ro))
+(in-package :x)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+
+  ;;(ro-match (ro-group (ro-+ (ro-word-char))) "abc ddd")
+  ;;(let ((res (ro-replace (ro-group (ro-string "a"))
+  ;;                       "xabc"
+  ;;                       "kk")))
+
+  ;;  (format t "res:~a~%" res)
+
+
+  (let ((target "xabca,abbb,  cc , e,def"))
+    (format t "~s~%" (ro-match ($/ ($/ "b") ($1)  "," ) target)))
+)
+
+
+

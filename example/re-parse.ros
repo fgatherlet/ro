@@ -1,0 +1,35 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  (ql:quickload '(:re) :silent t)
+  )
+
+;;(defpackage :ros.script.a.3759893904
+;;  (:use :cl :ro))
+;;(in-package :ros.script.a.3759893904)
+(in-package :re)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (format t "~s~%" (parse-re "ab(%d+)cd(abc|kvg)ef[abcd]gh(?:%D*)ij$"))
+  )
+
+(quote
+ ((:CHAR #\a)
+  (:CHAR #\b)
+  (:CAPTURE ((:+ (:IS #<FUNCTION DIGIT-CHAR-P>))))
+  (:CHAR #\c) (:CHAR #\d)
+  (:CAPTURE
+   ((:OR ((:CHAR #\a) (:CHAR #\b) (:CHAR #\c))
+         ((:CHAR #\k) (:CHAR #\v) (:CHAR #\g)))))
+  (:CHAR #\e) (:CHAR #\f) 
+  (:IS #<CLOSURE (FLET ANY :IN RE-SET) {10030518EB}>)
+  (:CHAR #\g) (:CHAR #\h)
+  (:IGNORE
+   ((:CHAR #\:) (:* (:IS #<CLOSURE (LAMBDA (C) :IN IS-NOT) {10030537FB}>))))
+  (:CHAR #\i) (:CHAR #\j) (:END))
+ )

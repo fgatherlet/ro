@@ -1,0 +1,31 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  (ql:quickload '(:ro) :silent t)
+  )
+
+;;(defpackage :ros.script.a.3759893904
+;;  (:use :cl :ro))
+;;(in-package :ros.script.a.3759893904)
+(in-package :ro)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (let* ((ro (ro-seq
+              (ro-char #\a)
+              (ro-or (ro-char #\b) (ro-char #\x))
+              (ro-any)
+              (ro-char #\d)))
+         (ro-char (ro-char #\a)))
+    (with-pandoric (cont) ro-char
+      (setf cont #'values))
+    (ro-test ro-char "abcdef")
+
+    (with-pandoric (cont) ro
+      (setf cont #'values))
+    (ro-test ro "abcdef")
+    ))

@@ -1,0 +1,33 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  (ql:quickload '(:ro) :silent t)
+  )
+
+;;(defpackage :ros.script.a.3759893904
+;;  (:use :cl :ro))
+;;(in-package :ros.script.a.3759893904)
+(in-package :ro)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (with-input-from-string (stream "ab(%d+)cd(abc|kvg)ef[abcd]gh(?:%D*)ij$")
+    (let ((lex (make-lexer stream)))
+      (format t "~s~%"
+              (collect 
+                  (mapping (((a b)
+                             (scan-fn
+                              '(values t t)
+                              (lambda () (funcall lex))
+                              (lambda (x y) (funcall lex))
+                              (lambda (x y) (null x))
+                              )))
+                    (list a b)))))))
+
+
+
+

@@ -1,0 +1,62 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  (ql:quickload '(:ro) :silent t)
+  )
+(in-package :ro)
+
+(defun $class-visibility ()
+  ($or "private" "protected" "public"))
+
+(defun $class-kind ()
+  ($or "abstract" "final" "sealed"))
+
+(defun $token (ro-pred)
+  ($/? ($* $s)
+       ro-pred
+       ($* $s)
+       ))
+
+(defun $class ()
+  ($/? ($* ($token ($class-visibility)))
+       ($* ($token ($class-kind)))
+       ($token "data")
+       ($token "class")
+       ($token ($/ ($+ $a)))))
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+
+  (print (ro-match ($/ ($class)) "public data class You(val me:String)"))
+
+  ;;(format t "char-class:~s~%" (make-char-class "abcd-kk%s"))
+
+  )
+
+;;(let* ((*target* "abcd-kk%s")
+;;       (*target-end* (length *target*)))
+;;  (multiple-value-bind (sp result) (funcall (lex-main) 0 nil)
+;;    (when result
+;;      result)))
+;;(setf a '(:a 10 :b 20))
+;;(setf b (cons (car a) (cdr a)))
+;;(setf (getf b :c) 100)
+;;
+;;(setf a '(0 1 2 3))
+;;(setf (getf a 2) 10)
+;;(let ((a ())
+;;      z)
+;;  (labels ((rec (x i)
+;;             (if (< 10 i)
+;;                 x
+;;                 (progn
+;;                   (format t ">>~a~%" x)
+;;                   (setf (getf x i) 20)
+;;                   (rec x (+ i 1))))))
+;;    (setq z (rec a 0)))
+;;  (values a z))
+

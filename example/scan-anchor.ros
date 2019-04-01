@@ -1,0 +1,18 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  (ql:quickload '(:ro) :silent t)
+  )
+(in-package :ro)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+
+  (let ((scanner (ro-group (ro-start) (ro-string "abc") (ro-end))))
+    (format t "~s~%" (ro-match scanner "abc")))
+  )
+

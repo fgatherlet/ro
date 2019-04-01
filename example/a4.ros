@@ -1,0 +1,26 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  (ql:quickload '(:ro) :silent t)
+  )
+
+;;(defpackage :ros.script.a.3759893904
+;;  (:use :cl :ro))
+;;(in-package :ros.script.a.3759893904)
+(in-package :ro)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (ro-test (ro-{} 3 3 (ro-string "abc")) "abcabcabc")
+  (ro-test (ro-{} 1 nil (ro-string "abc")) "abcabcabc")
+  (ro-test (ro-{} 1 2 (ro-string "abc")) "abcabcabc")
+
+  (ro-test (ro-{}? 1 2 (ro-string "abc")) "abcabcabc")
+
+  (ro-test (ro-+ (ro-string "abc")) "abcabcabc")
+
+  )

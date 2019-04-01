@@ -1,0 +1,48 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#|
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ros:ensure-asdf)
+  #+quicklisp(ql:quickload '(:series :let-over-lambda) :silent t)
+  )
+
+(defpackage :ros.script.tlist-dup.3760247202
+  (:shadowing-import-from :series :choose)
+  (:use :cl :lol :series))
+(in-package :ros.script.tlist-dup.3760247202)
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (collect-ignore
+   (scan-fn
+    '(values t t t)
+    (lambda ()
+      (let ((tlist (make-tlist)))
+        (dotimes (i 10)
+          (tlist-add-right tlist i))
+        (format t "initial tlist ~s~%" tlist)
+        (setf (cdr (cdr tlist)) (list :a :b :c (list 101 102)))
+        (format t "initial tlist-mod ~s~%" tlist)
+
+        (values tlist
+                (tlist-rem-left tlist)
+                ;;(let ((x (cons nil nil)))
+                ;;  (setf (car x) (car tlist)
+                ;;        (cdr x) (cdr tlist))
+                ;;  x)
+                (cons (car tlist) (cdr tlist))
+                )))
+    (lambda (tlist v tlist-dup)
+      (if (tlist-empty-p tlist)
+          (values nil nil tlist-dup)
+          (progn
+            (format t "main tlist: ~s~%" tlist)
+            (values tlist (tlist-rem-left tlist) tlist-dup))))
+    (lambda (tlist v tlist-dup)
+      (format t "end:~s~%" tlist-dup)
+      (when (null tlist)
+        )
+      (null tlist)))
+   ))
